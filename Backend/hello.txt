@@ -1,0 +1,24 @@
+token for MR. Hopkins: 
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQ1OWQ5ODJjODc3YTAxZThiZDcyNCIsImlhdCI6MTc0MzAxODQ1NywiZXhwIjoxNzQzMTA0ODU3fQ.PZekebE_8Bmk3GqFU8w4BJhhsUuJQWdsJe50y8O62Fc"
+
+{
+    "name": "John Hopkins",
+    "email": "hopkins@gmail.com",
+    "password": "password@123",
+    "phone": "1234567890",  // Exactly 10 digits
+    "address": "112 Main street"
+}
+
+for api/users/login
+
+{
+    "email": "hopkins@gmail.com",
+    "password": "password@123"
+}
+
+http://localhost:8000/api/users/profile
+
+
+authorization, have to put token and request type is "get"
+
+-> "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUwY2I3YzExNDgxZDU5OWYwMmI2YiIsImlhdCI6MTc0MzA2NDI0NywiZXhwIjoxNzQzMTUwNjQ3fQ.juAM1MnMfknuYFI7YN_i3hY_jSBGAm6mY2qkWJOkNnQ"
