@@ -1,3 +1,17 @@
+# Api endpoint validation
+
+- for the link: http://localhost:8000/api/users/register (for get)
+
+{
+"name": "Pranjal",
+"email":"prang@gmail.com",
+"password":"34343",
+"phone": "1818182323",
+"address":"1181 lbn"
+}
+
+---
+
 1. Initialize Project & Install Dependencies
 
 Run npm init -y and install necessary packages.
