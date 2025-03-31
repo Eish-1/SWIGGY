@@ -4,7 +4,9 @@ import {
     getAllRestaurants, 
     getRestaurantById,
     updateRestaurant,
-    addMenuItem
+    addMenuItem,
+    getMenuItems,
+    getMyRestaurants
 } from '../controllers/restaurantController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 
@@ -12,9 +14,15 @@ const router = express.Router();
 
 // Public Routes
 router.get('/', getAllRestaurants);
-router.get('/:id', getRestaurantById);
 
 // Protected Routes
+router.get('/my/restaurants', authMiddleware, getMyRestaurants);
+
+// Public Routes with params (must come after specific routes)
+router.get('/:id', getRestaurantById);
+router.get('/:id/menu', getMenuItems);
+
+// Protected Routes with params
 router.post('/', authMiddleware, createRestaurant);
 router.put('/:id', authMiddleware, updateRestaurant);
 router.post('/:id/menu', authMiddleware, addMenuItem);

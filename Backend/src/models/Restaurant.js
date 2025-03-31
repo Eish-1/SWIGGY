@@ -21,6 +21,10 @@ const restaurantSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    cuisines: [{
+        type: String,
+        required: false
+    }],
     menu: [{
         name: {
             type: String,
