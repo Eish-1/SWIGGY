@@ -9,15 +9,20 @@ const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const RestaurantDetails = lazy(() => import('./pages/RestaurantDetails'));
-const Cart = lazy(() => import('./pages/Cart'));
+// Import Cart directly for testing
+// import Cart from './pages/Cart'; 
+const Cart = lazy(() => import('./pages/Cart')); // Restore lazy loading
 const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Checkout = lazy(() => import('./pages/Checkout'));
 const OrderSuccess = lazy(() => import('./pages/OrderSuccess'));
-const OrderHistory = lazy(() => import('./pages/OrderHistory'));
+// Import OrderHistory directly for testing
+import OrderHistory from './pages/OrderHistory';
+// const OrderHistory = lazy(() => import('./pages/OrderHistory')); // Keep lazy version commented
 const MyRestaurants = lazy(() => import('./pages/MyRestaurants'));
 const AddRestaurant = lazy(() => import('./pages/AddRestaurant'));
 const EditRestaurant = lazy(() => import('./pages/EditRestaurant'));
+const ManageMenu = lazy(() => import('./pages/ManageMenu')); // Import ManageMenu
 
 // Loading component for Suspense
 const Loading = () => (
@@ -43,14 +48,19 @@ const ErrorBoundary = ({ error }) => (
 
 // Auth protection wrapper
 const ProtectedRoute = ({ children }) => {
+    console.log('[ProtectedRoute] Checking authentication...'); // Log entry
     // This is a placeholder for actual auth logic
     // In a real app, you'd check if the user is logged in
-    const isAuthenticated = localStorage.getItem('token') !== null;
+    const token = localStorage.getItem('token');
+    const isAuthenticated = token !== null;
+    console.log(`[ProtectedRoute] Token: ${token}, IsAuthenticated: ${isAuthenticated}`); // Log auth status
 
     if (!isAuthenticated) {
+        console.log('[ProtectedRoute] Not authenticated, navigating to /login'); // Log navigation
         return <Navigate to="/login" replace />;
     }
 
+    console.log('[ProtectedRoute] Authenticated, rendering children.'); // Log rendering children
     return children;
 };
 
@@ -108,6 +118,16 @@ const router = createBrowserRouter([
                 )
             },
             {
+                path: 'manage-menu/:id',
+                element: (
+                    <ProtectedRoute>
+                        <Suspense fallback={<Loading />}>
+                            <ManageMenu />
+                        </Suspense>
+                    </ProtectedRoute>
+                )
+            },
+            {
                 path: 'cart',
                 element: (
                     <ProtectedRoute>
@@ -141,9 +161,10 @@ const router = createBrowserRouter([
                 path: 'order-history',
                 element: (
                     <ProtectedRoute>
-                        <Suspense fallback={<Loading />}>
-                            <OrderHistory />
-                        </Suspense>
+                        {/* Temporarily remove Suspense */}
+                        {/* <Suspense fallback={<Loading />}> */}
+                        <OrderHistory />
+                        {/* </Suspense> */}
                     </ProtectedRoute>
                 )
             },

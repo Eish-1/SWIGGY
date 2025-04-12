@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faUtensils, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { fetchMyRestaurants } from '../redux/slices/restaurantSlice';
+import { faPlus, faUtensils, faPencilAlt, faList, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { fetchMyRestaurants, deleteRestaurant } from '../redux/slices/restaurantSlice';
 
 const MyRestaurants = () => {
     const dispatch = useDispatch();
@@ -12,6 +12,20 @@ const MyRestaurants = () => {
     useEffect(() => {
         dispatch(fetchMyRestaurants());
     }, [dispatch]);
+
+    const handleDeleteRestaurant = async (id, name) => {
+        if (!window.confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+            return;
+        }
+
+        const resultAction = await dispatch(deleteRestaurant(id));
+
+        if (deleteRestaurant.fulfilled.match(resultAction)) {
+            alert('Restaurant deleted successfully');
+        } else if (resultAction.error) {
+            alert(resultAction.error.message || 'Failed to delete restaurant');
+        }
+    };
 
     if (loading) {
         return (
@@ -97,20 +111,28 @@ const MyRestaurants = () => {
                                     <div className="text-sm text-gray-500">
                                         {restaurant.menu?.length || 0} Menu Items
                                     </div>
-                                    <div className="flex">
+                                    <div className="flex space-x-3">
                                         <Link
-                                            to={`/restaurant/${restaurant._id}`}
-                                            className="text-[#FC8019] hover:underline text-sm"
+                                            to={`/manage-menu/${restaurant._id}`}
+                                            className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition-colors duration-300 flex items-center"
                                         >
-                                            View
+                                            <FontAwesomeIcon icon={faList} className="mr-1" />
+                                            <span>Menu</span>
                                         </Link>
-                                        <span className="mx-2 text-gray-300">|</span>
                                         <Link
                                             to={`/edit-restaurant/${restaurant._id}`}
-                                            className="text-[#FC8019] hover:underline text-sm"
+                                            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition-colors duration-300 flex items-center"
                                         >
-                                            Edit
+                                            <FontAwesomeIcon icon={faPencilAlt} className="mr-1" />
+                                            <span>Edit</span>
                                         </Link>
+                                        <button
+                                            onClick={() => handleDeleteRestaurant(restaurant._id, restaurant.name)}
+                                            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition-colors duration-300 flex items-center"
+                                        >
+                                            <FontAwesomeIcon icon={faTrashAlt} className="mr-1" />
+                                            <span>Delete</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

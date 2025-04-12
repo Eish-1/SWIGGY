@@ -6,7 +6,8 @@ import {
     updateRestaurant,
     addMenuItem,
     getMenuItems,
-    getMyRestaurants
+    getMyRestaurants,
+    deleteRestaurant
 } from '../controllers/restaurantController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 
@@ -26,5 +27,6 @@ router.get('/:id/menu', getMenuItems);
 router.post('/', authMiddleware, createRestaurant);
 router.put('/:id', authMiddleware, updateRestaurant);
 router.post('/:id/menu', authMiddleware, addMenuItem);
+router.delete('/:id', authMiddleware, deleteRestaurant);
 
 export default router;

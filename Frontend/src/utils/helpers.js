@@ -43,4 +43,5 @@ export function getRandomFoodImage(itemName = '') {
 
     // Return a random food image if no match
     return foodImages[Math.floor(Math.random() * foodImages.length)];
+
 } 

@@ -114,7 +114,8 @@ export const getRestaurantById = async (req, res) => {
 // Update restaurant details
 export const updateRestaurant = async (req, res) => {
     try {
-        const { name, location, menu } = req.body;
+        // Destructure all relevant fields, including image
+        const { name, location, menu, image, cuisines } = req.body; 
 
         const restaurant = await Restaurant.findById(req.params.id);
 
@@ -136,8 +137,16 @@ export const updateRestaurant = async (req, res) => {
         // Update fields
         if (name) restaurant.name = name;
         if (location) restaurant.location = location;
-        if (menu) restaurant.menu = menu;
-
+        // Note: Overwriting the entire menu like this might be destructive.
+        // Consider separate endpoints for adding/updating/deleting menu items.
+        if (menu) restaurant.menu = menu; 
+        if (cuisines) restaurant.cuisines = cuisines; // Also update cuisines if provided
+        
+        // Update image only if a non-empty value is provided
+        if (image !== undefined) { // Check if image key exists in request
+             restaurant.image = image; // Allow setting empty string to clear image if desired
+        }
+        
         await restaurant.save();
 
         res.status(200).json({
@@ -267,6 +276,54 @@ export const getMyRestaurants = async (req, res) => {
         res.status(500).json({ 
             success: false, 
             message: 'Failed to fetch your restaurants', 
+            error: error.message 
+        });
+    }
+};
+
+// Delete a restaurant
+export const deleteRestaurant = async (req, res) => {
+    try {
+        const restaurantId = req.params.id;
+        const userId = req.user._id;
+
+        console.log(`[deleteRestaurant] Attempting delete for restaurant ID: ${restaurantId} by user: ${userId}`);
+
+        const restaurant = await Restaurant.findById(restaurantId);
+
+        if (!restaurant) {
+            console.log(`[deleteRestaurant] Restaurant not found: ${restaurantId}`);
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Restaurant not found' 
+            });
+        }
+
+        // Check if the user is the owner
+        if (restaurant.owner.toString() !== userId.toString()) {
+            console.log(`[deleteRestaurant] Forbidden: User ${userId} is not owner of restaurant ${restaurantId}`);
+            return res.status(403).json({ 
+                success: false, 
+                message: 'Not authorized to delete this restaurant' 
+            });
+        }
+
+        // Proceed with deletion
+        await Restaurant.findByIdAndDelete(restaurantId);
+        console.log(`[deleteRestaurant] Successfully deleted restaurant ID: ${restaurantId}`);
+
+        // Optional: Remove restaurant reference from user's ownedRestaurants array if needed
+
+        res.status(200).json({
+            success: true,
+            message: 'Restaurant deleted successfully'
+        });
+
+    } catch (error) {
+        console.error("Error deleting restaurant:", error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to delete restaurant', 
             error: error.message 
         });
     }

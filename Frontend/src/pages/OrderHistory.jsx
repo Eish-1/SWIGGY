@@ -1,52 +1,49 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+    fetchUserOrders,
+    selectUserOrders,
+    selectOrdersStatus,
+    selectOrdersError
+} from '../redux/orderSlice';
+import { toast } from 'react-toastify';
 
 const OrderHistory = () => {
-    const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const orders = useSelector(selectUserOrders);
+    const orderStatus = useSelector(selectOrdersStatus);
+    const error = useSelector(selectOrdersError);
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    throw new Error('Not authenticated');
-                }
+        console.log("[OrderHistory useEffect] Running.");
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log("[OrderHistory useEffect] No token, navigating to login.");
+            toast.info('Please log in to view order history.');
+            navigate('/login');
+            return;
+        }
 
-                const response = await fetch('http://localhost:8000/api/orders', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+        console.log("[OrderHistory useEffect] Dispatching fetchUserOrders.");
+        dispatch(fetchUserOrders());
+    }, [dispatch, navigate]);
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch orders');
-                }
-
-                const data = await response.json();
-                setOrders(data.data || []);
-                setLoading(false);
-            } catch (err) {
-                setError(err.message);
-                setLoading(false);
-            }
-        };
-
-        fetchOrders();
-    }, []);
-
-    if (loading) {
+    if (orderStatus === 'loading') {
+        console.log("[OrderHistory] Rendering Loading State");
         return (
             <div className="container mx-auto px-4 py-8">
                 <div className="text-center">
-                    <p className="text-xl">Loading your orders...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FC8019] mx-auto"></div>
+                    <p className="text-xl mt-4 text-[#282C3F]">Loading your orders...</p>
                 </div>
             </div>
         );
     }
 
-    if (error) {
+    if (orderStatus === 'failed') {
+        console.error("[OrderHistory] Rendering Error State:", error);
         return (
             <div className="container mx-auto px-4 py-8">
                 <div className="text-center text-red-500">
@@ -57,7 +54,8 @@ const OrderHistory = () => {
         );
     }
 
-    if (orders.length === 0) {
+    if (orderStatus === 'succeeded' && orders.length === 0) {
+        console.log("[OrderHistory] Rendering Empty State");
         return (
             <div className="container mx-auto px-4 py-16 text-center">
                 <h1 className="text-3xl font-bold mb-6">Your Order History</h1>
@@ -74,43 +72,51 @@ const OrderHistory = () => {
         );
     }
 
-    // This is a placeholder. In a complete implementation, you'd display the full UI with real order data
+    console.log("[OrderHistory] Rendering Orders List. Count:", orders.length);
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-8">Your Order History</h1>
 
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="p-4 border-b">
-                    <h2 className="text-xl font-semibold">Recent Orders</h2>
-                    <p className="text-gray-600">This is a placeholder for the order history page.</p>
-                </div>
-
                 <div>
-                    {orders.map((order) => (
-                        <div key={order._id} className="border-b p-4 hover:bg-gray-50">
-                            <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-                                <div>
-                                    <p className="font-semibold">Order #{order._id.substring(0, 8)}</p>
-                                    <p className="text-gray-600">
-                                        Date: {new Date(order.createdAt).toLocaleDateString()}
-                                    </p>
-                                    <p className="text-gray-600">
-                                        Items: {order.items.length} | Total: ${order.totalPrice.toFixed(2)}
-                                    </p>
-                                </div>
-                                <div className="mt-3 md:mt-0">
-                                    <span className={`inline-block px-3 py-1 rounded-full text-xs ${order.status === 'delivered'
-                                            ? 'bg-green-100 text-green-800'
-                                            : order.status === 'cancelled'
-                                                ? 'bg-red-100 text-red-800'
-                                                : 'bg-yellow-100 text-yellow-800'
-                                        }`}>
-                                        {order.status.charAt(0).toUpperCase() + order.status.slice(1).replace('_', ' ')}
-                                    </span>
+                    {orders.map((order) => {
+                        const orderIdShort = order._id.substring(order._id.length - 8);
+                        const orderDate = new Date(order.createdAt).toLocaleDateString();
+                        const itemCount = order.items?.length || 0;
+                        const total = order.totalPrice?.toFixed(2) || 'N/A';
+                        const restaurantName = order.restaurant?.name || 'Restaurant Unavailable';
+
+                        return (
+                            <div key={order._id} className="border-b p-4 hover:bg-gray-50">
+                                <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+                                    <div>
+                                        <p className="font-semibold">Order #{orderIdShort}</p>
+                                        <p className="text-sm text-gray-500">From: {restaurantName}</p>
+                                        <p className="text-gray-600">Date: {orderDate}</p>
+                                        <p className="text-gray-600">
+                                            Items: {itemCount} | Total: ₹{total}
+                                        </p>
+                                        {order.items && order.items.length > 0 && (
+                                            <div className="mt-2 text-sm text-gray-500">
+                                                Items: {order.items.map(item => item.name || '?').join(', ')}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="mt-3 md:mt-0">
+                                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                                            order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                                order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                    order.status === 'preparing' ? 'bg-blue-100 text-blue-800' :
+                                                        order.status === 'out_for_delivery' ? 'bg-purple-100 text-purple-800' :
+                                                            'bg-gray-100 text-gray-800'
+                                            }`}>
+                                            {order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1).replace('_', ' ') : 'Unknown'}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </div>

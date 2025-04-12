@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { restaurantAPI } from '../api/axios';
+import { useDispatch } from 'react-redux';
+import { addItemToCart } from '../redux/cartSlice';
+import { toast } from 'react-toastify';
 
 const RestaurantDetails = () => {
     const { id } = useParams();
@@ -8,6 +11,26 @@ const RestaurantDetails = () => {
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+
+    const handleAddToCart = (menuItem) => {
+        if (!menuItem || !menuItem._id) {
+            console.error("Invalid menu item provided to handleAddToCart");
+            toast.error("Could not add item: Invalid item data.");
+            return;
+        }
+        console.log(`Adding item ${menuItem.name} (ID: ${menuItem._id}) to cart`);
+        dispatch(addItemToCart({ itemId: menuItem._id, quantity: 1 }))
+            .unwrap()
+            .then(() => {
+                toast.success(`${menuItem.name} added to cart!`);
+            })
+            .catch((err) => {
+                console.error("Failed to add item to cart:", err);
+                const errorMessage = typeof err === 'string' ? err : 'Failed to add item. Please try again.';
+                toast.error(errorMessage);
+            });
+    };
 
     useEffect(() => {
         const fetchRestaurantDetails = async () => {
@@ -144,6 +167,14 @@ const RestaurantDetails = () => {
                                     <h3 className="font-bold">{item.name}</h3>
                                     <p className="text-gray-600">{item.description}</p>
                                     <p className="font-bold text-lg mt-2">₹{item.price}</p>
+                                </div>
+                                <div className="flex-shrink-0 ml-4">
+                                    <button
+                                        onClick={() => handleAddToCart(item)}
+                                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Add
+                                    </button>
                                 </div>
                             </div>
                         </div>

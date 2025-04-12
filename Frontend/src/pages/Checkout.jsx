@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { createOrder } from '../redux/orderSlice';
+import { clearLocalCart } from '../redux/cartSlice';
+import { toast } from 'react-toastify';
 
 const Checkout = () => {
     const [formData, setFormData] = useState({
@@ -7,6 +11,8 @@ const Checkout = () => {
         paymentMethod: 'card'
     });
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -16,13 +22,37 @@ const Checkout = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // In a real implementation, this would send the checkout data to your backend
-        console.log('Checkout data:', formData);
+        if (!formData.address) {
+            toast.error("Please enter a delivery address.");
+            return;
+        }
 
-        // Navigate to order success page
-        navigate('/order-success');
+        setIsPlacingOrder(true);
+        console.log('Submitting order with data:', formData);
+
+        try {
+            const resultAction = await dispatch(createOrder(formData));
+
+            if (createOrder.fulfilled.match(resultAction)) {
+                console.log('Order placed successfully:', resultAction.payload);
+                toast.success("Order placed successfully!");
+
+                dispatch(clearLocalCart());
+
+                navigate('/order-success', { state: { order: resultAction.payload } });
+            } else {
+                console.error('Failed to place order:', resultAction.payload);
+                const errorMessage = resultAction.payload || 'Failed to place order. Please try again.';
+                toast.error(errorMessage);
+            }
+        } catch (error) {
+            console.error('Unexpected error placing order:', error);
+            toast.error('An unexpected error occurred. Please try again.');
+        } finally {
+            setIsPlacingOrder(false);
+        }
     };
 
     return (
@@ -80,9 +110,10 @@ const Checkout = () => {
                         </p>
                         <button
                             type="submit"
-                            className="bg-orange-500 text-white py-3 px-6 rounded-md hover:bg-orange-600 transition-colors duration-300"
+                            disabled={isPlacingOrder}
+                            className="bg-orange-500 text-white py-3 px-6 rounded-md hover:bg-orange-600 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Place Order
+                            {isPlacingOrder ? 'Placing Order...' : 'Place Order'}
                         </button>
                     </div>
                 </form>

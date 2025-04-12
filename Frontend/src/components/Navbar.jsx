@@ -8,9 +8,12 @@ import {
     faUserPlus,
     faSignOutAlt,
     faUtensils,
-    faBug
+    faHistory,
+    // faBug // Commented out debug icon
 } from '@fortawesome/free-solid-svg-icons';
 import { logout } from '../utils/auth';
+import { useSelector } from 'react-redux';
+import { selectCartItemCount } from '../redux/cartSlice';
 
 const Navbar = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -19,8 +22,10 @@ const Navbar = () => {
         userName: '',
         token: null
     });
+    const cartItemCount = useSelector(selectCartItemCount);
 
     // Debug function to check localStorage
+    /*
     const debugLocalStorage = () => {
         const token = localStorage.getItem('token');
         const userData = localStorage.getItem('userData');
@@ -57,6 +62,7 @@ const Navbar = () => {
 
         console.log('DEBUG: Updated auth state:', { isLoggedIn: hasToken, userName, token });
     };
+    */
 
     // Initial auth check and setup
     useEffect(() => {
@@ -191,13 +197,22 @@ const Navbar = () => {
                         </Link>
 
                         {authState.isLoggedIn && (
-                            <Link to="/cart" className="hover:text-orange-200 transition duration-300">
-                                <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
+                            <Link
+                                to="/cart"
+                                className="relative hover:text-white text-orange-100 font-semibold transition duration-300 p-2 rounded-md hover:bg-orange-600"
+                            >
+                                <FontAwesomeIcon icon={faShoppingCart} className="mr-1" />
                                 Cart
+                                {cartItemCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                                        {cartItemCount}
+                                    </span>
+                                )}
                             </Link>
                         )}
 
                         {/* Debug button */}
+                        {/*
                         <button
                             onClick={debugLocalStorage}
                             className="text-xs bg-gray-800 text-white px-2 py-1 rounded hover:bg-gray-700"
@@ -205,6 +220,7 @@ const Navbar = () => {
                         >
                             <FontAwesomeIcon icon={faBug} /> Debug
                         </button>
+                        */}
 
                         {/* Profile dropdown */}
                         <div className="relative dropdown-container">
@@ -236,6 +252,14 @@ const Navbar = () => {
                                             >
                                                 <FontAwesomeIcon icon={faUtensils} className="mr-2" />
                                                 My Restaurants
+                                            </Link>
+                                            <Link
+                                                to="/order-history"
+                                                className="block px-4 py-2 text-gray-800 hover:bg-orange-100"
+                                                onClick={() => setDropdownOpen(false)}
+                                            >
+                                                <FontAwesomeIcon icon={faHistory} className="mr-2" />
+                                                Order History
                                             </Link>
                                             <button
                                                 onClick={handleLogout}

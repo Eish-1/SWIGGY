@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api/axios';
+import { restaurantAPI } from '../../api/axios';
 
 const initialState = {
   restaurants: [],
@@ -26,7 +26,7 @@ export const fetchRestaurants = createAsyncThunk(
         url += `?${queryParams.toString()}`;
       }
       
-      const response = await api.get(url);
+      const response = await restaurantAPI.get(url.replace('/restaurants', '') || '/');
       return response.data.restaurants || response.data.data || [];
     } catch (error) {
       return rejectWithValue(
@@ -41,7 +41,7 @@ export const fetchMyRestaurants = createAsyncThunk(
   'restaurants/fetchMine',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/restaurants/my/restaurants');
+      const response = await restaurantAPI.get('/my/restaurants');
       return response.data.restaurants || [];
     } catch (error) {
       return rejectWithValue(
@@ -56,7 +56,7 @@ export const fetchRestaurantById = createAsyncThunk(
   'restaurants/fetchById',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/restaurants/${id}`);
+      const response = await restaurantAPI.get(`/${id}`);
       return response.data.restaurant || response.data.data;
     } catch (error) {
       return rejectWithValue(
@@ -71,7 +71,7 @@ export const createRestaurant = createAsyncThunk(
   'restaurants/create',
   async (restaurantData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/restaurants', restaurantData);
+      const response = await restaurantAPI.post('/', restaurantData);
       return response.data.restaurant;
     } catch (error) {
       return rejectWithValue(
@@ -86,11 +86,26 @@ export const updateRestaurant = createAsyncThunk(
   'restaurants/update',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/restaurants/${id}`, data);
+      const response = await restaurantAPI.put(`/${id}`, data);
       return response.data.restaurant;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to update restaurant'
+      );
+    }
+  }
+);
+
+// Delete a restaurant
+export const deleteRestaurant = createAsyncThunk(
+  'restaurants/delete',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await restaurantAPI.delete(`/${id}`);
+      return { id, success: response.data.success };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to delete restaurant'
       );
     }
   }
@@ -178,6 +193,22 @@ const restaurantSlice = createSlice({
         state.loading = false;
       })
       .addCase(updateRestaurant.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
+      // Delete restaurant
+      .addCase(deleteRestaurant.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteRestaurant.fulfilled, (state, action) => {
+        state.myRestaurants = state.myRestaurants.filter(
+          restaurant => restaurant._id !== action.payload.id
+        );
+        state.loading = false;
+      })
+      .addCase(deleteRestaurant.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
