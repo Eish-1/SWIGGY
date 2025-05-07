@@ -6,13 +6,19 @@ export const fetchUserOrders = createAsyncThunk(
     'orders/fetchUserOrders',
     async (_, { rejectWithValue }) => {
         try {
+            console.log("[orderSlice] Fetching user orders from API");
             const data = await fetchOrdersApi();
+            console.log("[orderSlice] API response:", data);
+            
             if (data.success) {
+                console.log(`[orderSlice] Successfully fetched ${data.orders?.length || 0} orders`);
                 return data.orders || []; // Return the orders array
             } else {
+                console.error("[orderSlice] API returned success: false", data.message);
                 return rejectWithValue(data.message || 'Failed to fetch orders');
             }
         } catch (error) {
+            console.error("[orderSlice] Error fetching orders:", error);
             return rejectWithValue(error.response?.data?.message || error.message || 'An error occurred while fetching orders');
         }
     }

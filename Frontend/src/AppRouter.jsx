@@ -5,7 +5,8 @@ import { Suspense, lazy } from 'react';
 import RootLayout from './layouts/RootLayout';
 
 // Pages - Lazy loaded for better performance
-const Home = lazy(() => import('./pages/Home'));
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const Restaurants = lazy(() => import('./pages/Restaurants'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const RestaurantDetails = lazy(() => import('./pages/RestaurantDetails'));
@@ -75,7 +76,15 @@ const router = createBrowserRouter([
                 index: true,
                 element: (
                     <Suspense fallback={<Loading />}>
-                        <Home />
+                        <LandingPage />
+                    </Suspense>
+                )
+            },
+            {
+                path: 'restaurants',
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <Restaurants />
                     </Suspense>
                 )
             },
@@ -158,7 +167,7 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: 'order-history',
+                path: 'orders',
                 element: (
                     <ProtectedRoute>
                         {/* Temporarily remove Suspense */}
@@ -167,6 +176,10 @@ const router = createBrowserRouter([
                         {/* </Suspense> */}
                     </ProtectedRoute>
                 )
+            },
+            {
+                path: 'order-history',
+                element: <Navigate to="/orders" replace />
             },
             {
                 path: 'profile',

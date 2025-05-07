@@ -5,6 +5,8 @@ import {
     getRestaurantById,
     updateRestaurant,
     addMenuItem,
+    updateMenuItem,
+    deleteMenuItem,
     getMenuItems,
     getMyRestaurants,
     deleteRestaurant
@@ -27,6 +29,8 @@ router.get('/:id/menu', getMenuItems);
 router.post('/', authMiddleware, createRestaurant);
 router.put('/:id', authMiddleware, updateRestaurant);
 router.post('/:id/menu', authMiddleware, addMenuItem);
+router.put('/:id/menu/:itemId', authMiddleware, updateMenuItem);
+router.delete('/:id/menu/:itemId', authMiddleware, deleteMenuItem);
 router.delete('/:id', authMiddleware, deleteRestaurant);
 
 export default router;

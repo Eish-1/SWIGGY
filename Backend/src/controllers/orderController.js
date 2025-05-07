@@ -130,15 +130,19 @@ export const getUserOrders = async (req, res) => {
         }
         
         console.log(`[getUserOrders] Finding orders for user ID: ${userId}`);
-        // Temporarily remove populate to isolate the find query
+        
         const orders = await Order.find({ user: userId })
-            // .populate('restaurant', 'name location') // Temporarily removed
+            .populate('restaurant', 'name location image')
             .sort({ createdAt: -1 });
 
         // Log the raw orders found
-        console.log(`[getUserOrders] Found ${orders.length} raw orders for user ${userId}`);
-        // Optional: Log the found orders themselves (can be verbose)
-        // console.log('[getUserOrders] Orders data:', JSON.stringify(orders, null, 2));
+        console.log(`[getUserOrders] Found ${orders.length} orders for user ${userId}`);
+        
+        if (orders.length === 0) {
+            console.log(`[getUserOrders] No orders found for user ${userId}`);
+        } else {
+            console.log(`[getUserOrders] First order ID: ${orders[0]._id}, status: ${orders[0].status}`);
+        }
 
         res.status(200).json({
             success: true,
@@ -146,6 +150,7 @@ export const getUserOrders = async (req, res) => {
             orders
         });
     } catch (error) {
+        console.error(`[getUserOrders] Error fetching orders: ${error.message}`);
         res.status(500).json({ 
             success: false, 
             message: 'Failed to fetch orders', 

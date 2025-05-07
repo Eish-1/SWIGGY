@@ -30,6 +30,14 @@ const OrderHistory = () => {
         dispatch(fetchUserOrders());
     }, [dispatch, navigate]);
 
+    // Log orders data whenever it changes
+    useEffect(() => {
+        console.log("[OrderHistory] Current orders data:", orders);
+        if (orders && orders.length > 0) {
+            console.log("[OrderHistory] First order details:", orders[0]);
+        }
+    }, [orders]);
+
     if (orderStatus === 'loading') {
         console.log("[OrderHistory] Rendering Loading State");
         return (
@@ -63,7 +71,7 @@ const OrderHistory = () => {
                     You haven't placed any orders yet. Start ordering your favorite food!
                 </p>
                 <Link
-                    to="/"
+                    to="/restaurants"
                     className="inline-block bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600 transition-colors duration-300"
                 >
                     Browse Restaurants
@@ -75,19 +83,19 @@ const OrderHistory = () => {
     console.log("[OrderHistory] Rendering Orders List. Count:", orders.length);
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8">Your Order History</h1>
+            <h1 className="text-3xl font-bold mb-8 text-center text-[#F97316]">Your Order History</h1>
 
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div>
-                    {orders.map((order) => {
-                        const orderIdShort = order._id.substring(order._id.length - 8);
-                        const orderDate = new Date(order.createdAt).toLocaleDateString();
+                    {orders.map((order, index) => {
+                        const orderIdShort = order._id ? order._id.substring(order._id.length - 8) : 'N/A';
+                        const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
                         const itemCount = order.items?.length || 0;
                         const total = order.totalPrice?.toFixed(2) || 'N/A';
                         const restaurantName = order.restaurant?.name || 'Restaurant Unavailable';
 
                         return (
-                            <div key={order._id} className="border-b p-4 hover:bg-gray-50">
+                            <div key={order._id || index} className="border-b p-4 hover:bg-gray-50">
                                 <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                                     <div>
                                         <p className="font-semibold">Order #{orderIdShort}</p>

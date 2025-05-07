@@ -23,9 +23,19 @@ orderApi.interceptors.request.use((config) => {
 
 // Fetch orders for the logged-in user
 export const fetchOrders = async () => {
-    const response = await orderApi.get('/');
-    // Assuming backend sends { success: true, orders: [...] }
-    return response.data; 
+    try {
+        console.log("[orderApi] Making API request to fetch orders");
+        const response = await orderApi.get('/');
+        console.log("[orderApi] Orders API response status:", response.status);
+        
+        // Return the data
+        return response.data;
+    } catch (error) {
+        console.error("[orderApi] Error fetching orders:", error.response?.status, error.message);
+        
+        // Propagate error for proper handling
+        throw error;
+    }
 };
 
 // Potential: Add function to create order if needed here

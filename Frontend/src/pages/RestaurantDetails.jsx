@@ -88,7 +88,7 @@ const RestaurantDetails = () => {
                         Try Again
                     </button>
                     <Link
-                        to="/"
+                        to="/restaurants"
                         className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                     >
                         Back to Restaurants
@@ -103,7 +103,7 @@ const RestaurantDetails = () => {
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
                 <div className="text-xl text-red-600 mb-4">Restaurant not found</div>
                 <Link
-                    to="/"
+                    to="/restaurants"
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
                     Back to Restaurants
@@ -116,7 +116,7 @@ const RestaurantDetails = () => {
         <div className="p-4">
             <div className="mb-6">
                 <Link
-                    to="/"
+                    to="/restaurants"
                     className="text-blue-500 hover:text-blue-600 mb-4 inline-block"
                 >
                     ← Back to Restaurants

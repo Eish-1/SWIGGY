@@ -12,6 +12,8 @@ import EditRestaurant from './pages/EditRestaurant';
 import ManageMenu from './pages/ManageMenu';
 import { initAuth } from './utils/auth';
 import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   // Initialize authentication
@@ -20,22 +22,47 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<RootLayout />}>
-          <Route index element={<Home />} />
-          <Route path="restaurant/:id" element={<RestaurantDetails />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="my-restaurants" element={<MyRestaurants />} />
-          <Route path="add-restaurant" element={<AddRestaurant />} />
-          <Route path="edit-restaurant/:id" element={<EditRestaurant />} />
-          <Route path="manage-menu/:id" element={<ManageMenu />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <div className="min-h-screen flex flex-col bg-background">
+          <Routes>
+            <Route path="/" element={<RootLayout />}>
+              <Route index element={<Home />} />
+              <Route path="restaurant/:id" element={<RestaurantDetails />} />
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="my-restaurants" element={<MyRestaurants />} />
+              <Route path="add-restaurant" element={<AddRestaurant />} />
+              <Route path="edit-restaurant/:id" element={<EditRestaurant />} />
+              <Route path="manage-menu/:id" element={<ManageMenu />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </div>
+      </Router>
+
+      {/* Toast notifications with custom styling */}
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        toastStyle={{
+          borderRadius: '10px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+        }}
+        progressStyle={{
+          background: '#FC8019',
+        }}
+      />
+    </>
   );
 }
 

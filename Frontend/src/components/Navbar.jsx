@@ -9,6 +9,10 @@ import {
     faSignOutAlt,
     faUtensils,
     faHistory,
+    faStore,
+    faEdit,
+    faPlusCircle,
+    faClipboardList,
     // faBug // Commented out debug icon
 } from '@fortawesome/free-solid-svg-icons';
 import { logout } from '../utils/auth';
@@ -177,95 +181,126 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-orange-500 text-white shadow-md">
+        <nav className="bg-[#F97316] text-white shadow-nav sticky top-0 z-50">
             <div className="container mx-auto px-4 py-3">
                 <div className="flex justify-between items-center">
-                    {/* Logo */}
+                    {/* Logo - Positioned on the left */}
                     <Link to="/" className="flex items-center">
                         <img
                             src="/Home/Swiggy_logo_bml6he.png"
                             alt="Swiggy Logo"
-                            className="h-8 mr-2"
+                            className="h-10 mr-2"
                         />
                     </Link>
 
                     {/* Navigation Links */}
-                    <div className="flex items-center space-x-6">
-                        <Link to="/" className="font-bold text-white hover:text-orange-200 transition duration-300 text-lg">
+                    <div className="flex items-center space-x-8">
+                        <Link to="/restaurants" className="font-medium text-white hover:text-gray-200 transition duration-300 flex items-center">
                             <FontAwesomeIcon icon={faUtensils} className="mr-2" />
-                            Restaurants
+                            <span>Restaurants</span>
                         </Link>
 
                         {authState.isLoggedIn && (
                             <Link
-                                to="/cart"
-                                className="relative hover:text-white text-orange-100 font-semibold transition duration-300 p-2 rounded-md hover:bg-orange-600"
+                                to="/orders"
+                                className="font-medium text-white hover:text-gray-200 transition duration-300 flex items-center"
                             >
-                                <FontAwesomeIcon icon={faShoppingCart} className="mr-1" />
-                                Cart
-                                {cartItemCount > 0 && (
-                                    <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-                                        {cartItemCount}
-                                    </span>
-                                )}
+                                <FontAwesomeIcon icon={faHistory} className="mr-2" />
+                                <span>Orders</span>
                             </Link>
                         )}
 
-                        {/* Debug button */}
-                        {/*
-                        <button
-                            onClick={debugLocalStorage}
-                            className="text-xs bg-gray-800 text-white px-2 py-1 rounded hover:bg-gray-700"
-                            title="Debug localStorage"
+                        {/* Cart Link with Item Count */}
+                        <Link
+                            to="/cart"
+                            className="font-medium text-white hover:text-gray-200 transition duration-300 flex items-center relative"
                         >
-                            <FontAwesomeIcon icon={faBug} /> Debug
-                        </button>
-                        */}
+                            <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
+                            <span>Cart</span>
+                            {cartItemCount > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-white text-[#F97316] rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">
+                                    {cartItemCount}
+                                </span>
+                            )}
+                        </Link>
 
-                        {/* Profile dropdown */}
-                        <div className="relative dropdown-container">
+                        {/* User Account Section */}
+                        <div className="dropdown-container relative">
                             <button
                                 onClick={toggleDropdown}
-                                className="flex items-center hover:text-orange-200 transition duration-300 focus:outline-none"
-                                data-testid="profile-button"
+                                aria-expanded={dropdownOpen}
+                                aria-haspopup="true"
+                                className="flex items-center font-medium text-white hover:text-gray-200 transition duration-300 focus:outline-none"
                             >
                                 <FontAwesomeIcon icon={faUser} className="mr-2" />
-                                {authState.isLoggedIn ? authState.userName : 'Profile'}
+                                <span>{authState.isLoggedIn ? authState.userName : 'Account'}</span>
+                                <svg
+                                    className={`ml-2 w-4 h-4 transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
                             </button>
 
+                            {/* Dropdown Menu with Enhanced Styling */}
                             {dropdownOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20">
+                                <div
+                                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-dropdown overflow-hidden animate-fade-in"
+                                    role="menu"
+                                    aria-orientation="vertical"
+                                    aria-labelledby="user-menu"
+                                >
                                     {authState.isLoggedIn ? (
                                         <>
                                             <Link
                                                 to="/profile"
-                                                className="block px-4 py-2 text-gray-800 hover:bg-orange-100"
+                                                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition duration-300"
                                                 onClick={() => setDropdownOpen(false)}
                                             >
-                                                <FontAwesomeIcon icon={faUser} className="mr-2" />
+                                                <FontAwesomeIcon icon={faUser} className="mr-2 text-[#F97316]" />
                                                 My Profile
                                             </Link>
                                             <Link
-                                                to="/my-restaurants"
-                                                className="block px-4 py-2 text-gray-800 hover:bg-orange-100"
+                                                to="/orders"
+                                                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition duration-300"
                                                 onClick={() => setDropdownOpen(false)}
                                             >
-                                                <FontAwesomeIcon icon={faUtensils} className="mr-2" />
+                                                <FontAwesomeIcon icon={faHistory} className="mr-2 text-[#F97316]" />
+                                                Order History
+                                            </Link>
+
+                                            {/* Restaurant Management Section - Divider */}
+                                            <div className="border-t border-gray-200 my-1"></div>
+
+                                            {/* Restaurant Management Options */}
+                                            <Link
+                                                to="/my-restaurants"
+                                                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition duration-300"
+                                                onClick={() => setDropdownOpen(false)}
+                                            >
+                                                <FontAwesomeIcon icon={faStore} className="mr-2 text-[#F97316]" />
                                                 My Restaurants
                                             </Link>
                                             <Link
-                                                to="/order-history"
-                                                className="block px-4 py-2 text-gray-800 hover:bg-orange-100"
+                                                to="/add-restaurant"
+                                                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition duration-300"
                                                 onClick={() => setDropdownOpen(false)}
                                             >
-                                                <FontAwesomeIcon icon={faHistory} className="mr-2" />
-                                                Order History
+                                                <FontAwesomeIcon icon={faPlusCircle} className="mr-2 text-[#F97316]" />
+                                                Add Restaurant
                                             </Link>
+
+                                            {/* Logout Section - Divider */}
+                                            <div className="border-t border-gray-200 my-1"></div>
+
                                             <button
                                                 onClick={handleLogout}
-                                                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-orange-100"
+                                                className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition duration-300"
                                             >
-                                                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+                                                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2 text-[#F97316]" />
                                                 Logout
                                             </button>
                                         </>
@@ -273,19 +308,19 @@ const Navbar = () => {
                                         <>
                                             <Link
                                                 to="/login"
-                                                className="block px-4 py-2 text-gray-800 hover:bg-orange-100"
+                                                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition duration-300"
                                                 onClick={() => setDropdownOpen(false)}
                                             >
-                                                <FontAwesomeIcon icon={faSignInAlt} className="mr-2" />
+                                                <FontAwesomeIcon icon={faSignInAlt} className="mr-2 text-[#F97316]" />
                                                 Login
                                             </Link>
                                             <Link
                                                 to="/register"
-                                                className="block px-4 py-2 text-gray-800 hover:bg-orange-100"
+                                                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition duration-300"
                                                 onClick={() => setDropdownOpen(false)}
                                             >
-                                                <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
-                                                Register
+                                                <FontAwesomeIcon icon={faUserPlus} className="mr-2 text-[#F97316]" />
+                                                Sign Up
                                             </Link>
                                         </>
                                     )}
