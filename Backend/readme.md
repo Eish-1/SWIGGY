@@ -1,3 +1,8 @@
+npm install yup @hookform/resolvers
+
+Start with React Context (built-in). If needed later:
+
+
 # Api endpoint validation
 
 - for the link: http://localhost:8000/api/users/register (for get)

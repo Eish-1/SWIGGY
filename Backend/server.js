@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Enable CORS for all routes
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
     credentials: true
 }));
 // HTTP request logger
@@ -41,6 +41,48 @@ import userRoutes from './src/routes/userRoutes.js';
 import restaurantRoutes from './src/routes/restaurantRoutes.js';
 import orderRoutes from './src/routes/orderRoutes.js';
 import cartRoutes from './src/routes/cartRoutes.js';
+
+// Print available routes for debugging
+const printRoutes = (route, basePath = '') => {
+    try {
+        if (!route) return;
+        
+        if (route.stack) {
+            route.stack.forEach(item => {
+                if (item.route) {
+                    const path = basePath + (item.route.path || '');
+                    if (item.route.methods) {
+                        Object.keys(item.route.methods)
+                            .filter(method => item.route.methods[method])
+                            .forEach(method => {
+                                console.log(`${method.toUpperCase().padEnd(7)} ${path}`);
+                            });
+                    }
+                } else if (item.name === 'router' && item.handle && item.handle.stack) {
+                    // Nested routers
+                    const routerPath = item.regexp ? 
+                        basePath + (item.regexp.toString().replace('/^\\', '').replace('\\/?(?=\\/|$)/i', '')) : 
+                        basePath;
+                    
+                    item.handle.stack.forEach(nestedItem => {
+                        if (nestedItem.route) {
+                            const nestedPath = routerPath + (nestedItem.route.path || '');
+                            if (nestedItem.route.methods) {
+                                Object.keys(nestedItem.route.methods)
+                                    .filter(method => nestedItem.route.methods[method])
+                                    .forEach(method => {
+                                        console.log(`${method.toUpperCase().padEnd(7)} ${nestedPath}`);
+                                    });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    } catch (err) {
+        console.log('Error printing routes:', err.message);
+    }
+};
 
 app.use('/api/users', userRoutes);
 app.use('/api/restaurants', restaurantRoutes);
@@ -72,4 +114,8 @@ const MODE = process.env.NODE_ENV || 'development';
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server running in ${MODE} mode on port ${PORT}`);
+    console.log(`API available at http://localhost:${PORT}/api`);
+    
+    console.log('\nAvailable restaurant routes:');
+    printRoutes(restaurantRoutes);
 });

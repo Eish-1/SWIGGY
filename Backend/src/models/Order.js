@@ -17,6 +17,10 @@ const orderSchema = new mongoose.Schema({
             ref: 'Restaurant.menu',
             required: true
         },
+        name: {
+            type: String,
+            required: true
+        },
         quantity: {
             type: Number,
             required: true,

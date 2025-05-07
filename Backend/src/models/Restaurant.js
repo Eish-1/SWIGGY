@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const getRandomImageUrl = "lol";
+const getRandomImageUrl = "https://imgs.search.brave.com/aQeI1R0456g6cvFYZKqGewllutrn2wKM6uYiTJxGeHc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzgzLzQwLzA1/LzM2MF9GXzI4MzQw/MDUyMV9FQldLTjNO/TXRaZXhZajdxSHhR/Q2YwYmE5OTlXWk04/ZC5qcGc";
 
 const restaurantSchema = new mongoose.Schema({
     name: {
@@ -21,6 +21,10 @@ const restaurantSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    cuisines: [{
+        type: String,
+        required: false
+    }],
     menu: [{
         name: {
             type: String,
