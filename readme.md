@@ -74,21 +74,23 @@ MONGO_URI=mongodb://localhost:27017/swiggyclone
 JWT_SECRET=your_jwt_secret
 ```
 
+## Screenshots of the application:
+
 ![image](https://github.com/user-attachments/assets/ea8384e3-71a4-4096-83d2-2c09820b2921)
 
-For viewing restaurants and menu items
+- For viewing restaurants and menu items
 
 ![image](https://github.com/user-attachments/assets/f374175c-4582-45d9-88dc-ef7a9fd48859)
 
 ![image](https://github.com/user-attachments/assets/543b3836-f55c-41ef-a893-9025f9fa9307)
 
-For Login or registration:
+- For Login or registration:
 
 ![image](https://github.com/user-attachments/assets/c9e297c0-d59e-4561-85f5-e8306268f950)
 
 ![image](https://github.com/user-attachments/assets/e8ff4f6b-ca1d-44ad-9401-b4d2a9f8d0df)
 
-Viewing orders, carts and owner’s restaurants:
+- Viewing orders, carts and owner’s restaurants:
 
 ![image](https://github.com/user-attachments/assets/2096f07c-fcd2-4c1a-a5ca-8b5dfaeb3b19)
 
@@ -100,7 +102,39 @@ Viewing orders, carts and owner’s restaurants:
 
 ![image](https://github.com/user-attachments/assets/2be45377-8369-45b4-a3e1-7aaa79412b83)
 
+### Learnings from this project
 
+- Implemented full-stack features using the MERN stack
 
+- Strengthened API handling, secure authentication, and role-based access
 
+- Gained experience with React hooks, routing, and state management
 
+### 📈 Future Improvements
+
+Payment gateway integration (Razorpay/Stripe)
+
+Admin dashboard for restaurant partners
+
+Order tracking and delivery simulation
+
+Better error handling and 404 pages
+
+### 🤝 Contributing
+
+Contributions are welcome! To get started:
+
+Fork the repository
+
+Create your feature branch: git checkout -b feature/YourFeature
+
+Commit your changes: git commit -m 'Add your feature'
+
+Push to the branch: git push origin feature/YourFeature
+
+Open a pull request
+
+📄 License
+This project is open source and available under the MIT License.
+
+Made with ❤️ by Eish Chandeal
