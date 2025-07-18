@@ -124,17 +124,17 @@ Better error handling and 404 pages
 
 Contributions are welcome! To get started:
 
-Fork the repository
+1. Fork the repository
 
-Create your feature branch: git checkout -b feature/YourFeature
+2. Create your feature branch: git checkout -b feature/YourFeature
 
-Commit your changes: git commit -m 'Add your feature'
+3. Commit your changes: git commit -m 'Add your feature'
 
-Push to the branch: git push origin feature/YourFeature
+4. Push to the branch: git push origin feature/YourFeature
 
-Open a pull request
+5. Open a pull request
 
-📄 License
+### 📄 License
 This project is open source and available under the MIT License.
 
 Made with ❤️ by Eish Chandeal
