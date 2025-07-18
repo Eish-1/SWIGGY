@@ -1,20 +1,78 @@
-# Description
+# 🍽️ SwiggyClone – Food Ordering & Restaurant Discovery App
 
-This is restaurant discovery and food ordering application inspired by Swiggy.  This project somewhat replicates Swiggy’s core UI/UX and functionality, built to strengthen real-world web development, and database management skills using modern technologies across both frontend and backend.
+A full-stack web application inspired by [Swiggy](https://www.swiggy.com), replicating its core functionality and user experience. Built to practice real-world web development, database design, and secure user authentication using modern technologies across the MERN stack.
 
-## Tech Stack 
+---
 
-The application is built using the popular **MERN** stack
+## 🚀 Features
 
-- The user interface is created using **React** a popular javascript library and **Tailwind CSS** is used for adding styling.
-- User authentication is done using **JWT web tokens**
-- **MongoDB** is used for database , **NodeJS** as runtime environment and **ExpressJS** for ensuring connectivity between the applications Frontend and Backend
+- 🧭 Discover restaurants and explore menus
+- 👤 User registration and login with secure JWT authentication
+- 🛒 Add items to cart, place orders (simulated)
+- 🧾 Manage orders, view order history
+- 💻 Responsive and modern UI using Tailwind CSS
+- 🔐 Protected routes for logged-in users
 
-## Developers guide (to run locally)
+---
 
-npm install (in both the frontend and backend directories)
+## 🛠️ Tech Stack
 
-npm run dev 
+**Frontend:**
+- React.js
+- Tailwind CSS
+- Axios
+
+**Backend:**
+- Node.js
+- Express.js
+- MongoDB
+- JWT (JSON Web Tokens) for authentication
+
+---
+
+## 🧑‍💻 Getting Started (Local Setup)
+
+### 📦 Prerequisites
+- Node.js and npm installed
+- MongoDB installed and running locally
+
+### 📁 Directory Structure
+
+root/
+├── Frontend/ # React frontend
+└── Backend/ # Express backend
+└── Swiggy/Frontend/src/utils # Dummy information
+
+
+### 🔧 Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/Eish-1/SWIGGY.git
+cd SWIGGY
+```
+2. **Install Dependencies**
+
+```bash
+cd Frontend && npm install   # for frontend
+cd ../Backend && npm install   # for backend
+```
+3. **Start Development Servers**
+
+```bash
+cd Frontend && npm run dev   # start backend server
+cd ../Backend && npm start  # start frontend
+```
+
+4. **Environment Variables**
+
+Create a .env file in the /server directory with the following:
+
+```.env
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/swiggyclone
+JWT_SECRET=your_jwt_secret
+```
 
 ![image](https://github.com/user-attachments/assets/ea8384e3-71a4-4096-83d2-2c09820b2921)
 
