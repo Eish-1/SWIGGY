@@ -38,7 +38,7 @@ A full-stack web application inspired by [Swiggy](https://www.swiggy.com), repli
 
 ### 📁 Directory Structure
 
-root/
+root/ \
 ├── Frontend/ # React frontend \
 └── Backend/ # Express backend \
 └── Swiggy/Frontend/src/utils # Dummy information
