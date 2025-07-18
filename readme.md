@@ -10,6 +10,12 @@ The application is built using the popular **MERN** stack
 - User authentication is done using **JWT web tokens**
 - **MongoDB** is used for database , **NodeJS** as runtime environment and **ExpressJS** for ensuring connectivity between the applications Frontend and Backend
 
+## Developers guide (to run locally)
+
+npm install (in both the frontend and backend directories)
+
+npm run dev 
+
 ![image](https://github.com/user-attachments/assets/ea8384e3-71a4-4096-83d2-2c09820b2921)
 
 For viewing restaurants and menu items
