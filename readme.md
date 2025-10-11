@@ -118,22 +118,3 @@ Admin dashboard for restaurant partners
 Order tracking and delivery simulation
 
 Better error handling and 404 pages
-
-### 🤝 Contributing
-
-Contributions are welcome! To get started:
-
-1. Fork the repository
-
-2. Create your feature branch: git checkout -b feature/YourFeature
-
-3. Commit your changes: git commit -m 'Add your feature'
-
-4. Push to the branch: git push origin feature/YourFeature
-
-5. Open a pull request
-
-### 📄 License
-This project is open source and available under the MIT License.
-
-Made with ❤️ by Eish Chandeal
